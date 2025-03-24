@@ -14,7 +14,7 @@ def check_text():
     name = data.get("text", "")
 
     try:
-        with open("data/results.txt", "r") as file:
+        with open("giftsite/data/results.txt", "r") as file:
             content = file.read()
         if name in content:
             return jsonify({"message"})
