@@ -52,7 +52,7 @@
                 document.getElementById("responseMessage").textContent = data.message || data.error;
             });
 
-            fetch('/read', {
+            fetch(`/read?text=${encodeURIComponent(name)}`, {
                 method: 'GET',
             })
             .then(response => response.json())
