@@ -10,24 +10,21 @@ def index():
 @app.route('/check', methods=['POST'])
 def check_text():
     data = request.json
-    input_name = data.get("text", "").strip()
+    name = data.get("text", "").strip()
 
     try:
         with open("giftsite/data/results.txt", "r") as file:
-            names = file.read().splitlines()  # Read names line by line
-
-        if input_name in names:
-            return jsonify({"message": f"{input_name} is in the list."})
+            content = file.read()
+        
+        if name in content:
+            return jsonify({"message": f"{name} is in the list."})
         else:
-            return jsonify({"message": f"{input_name} is NOT in the list."})
+            return jsonify({"message": f"{name} is NOT in the list."})
     except FileNotFoundError:
         return jsonify({"error": "File not found!"}), 404
 
-@app.route('/read', methods=['POST'])
+@app.route('/read', methods=['GET'])
 def read_text():
-    data = request.json
-    input_name = data.get("text", "").strip()
-
     try:
         with open("giftsite/data/results.txt", "r") as file:
             names = file.read().splitlines()
@@ -35,10 +32,12 @@ def read_text():
         if not names:
             return jsonify({"error": "No names available!"}), 400
 
+        input_name = request.args.get("text", "").strip()  # Get the name from query params
+
         # Ensure the random name is not the same as the input name
         available_names = [name for name in names if name != input_name]
         if not available_names:
-            return jsonify({"error": "No available names left!"}), 400
+            return jsonify({"error": "No other names available!"}), 400
 
         random_name = random.choice(available_names)
 
